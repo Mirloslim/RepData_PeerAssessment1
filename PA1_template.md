@@ -1,10 +1,9 @@
-## Reproducible Research: Peer Assessment 1
-
-
+# Reproducible Research: Peer Assessment 1
+Reproduced by Elizabeth Pay
 
 ## Loading and preprocessing the data
 ```r
-setwd("/Users/User/Desktop/RepData_PeerAssessment1")
+setwd("/Users/User/Desktop")
 data <- read.csv("activity.csv")
 ```
 
@@ -18,23 +17,21 @@ For this part of the assignment, you can ignore the missing values in the datase
 ```r
 hist(tapply(data$steps, data$date, sum), xlab = "Total Daily Steps", breaks = 20, 
      main = "Total Steps Taken Per Day")
-total_daily_steps <- as.numeric(tapply(data$steps, data$date, sum))
+total_steps_daily <- as.numeric(tapply(data$steps, data$date, sum))
 ```
 ![Plot of Total Number of Steps Taken Each Day](plot1.png)
 
 3. Calculate and report the mean and median of the total number of steps taken per day
 
 ```r
-mean_steps <- mean(total_daily_steps, na.rm = TRUE)
-mean_steps
+mean_steps <- mean(total_steps_daily, na.rm = TRUE)
 ```
 ```
 # [1] 10766
 ```
 
 ```r
-median_steps <- median(total_daily_steps, na.rm = TRUE)
-median_steps
+median_steps <- median(total_steps_daily, na.rm = TRUE)
 ```
 ```
 # [1] 10765
@@ -53,7 +50,7 @@ intervals <- intervals[order(intervals$intervals), ]
 labels <- c("00:00", "05:00", "10:00", "15:00", "20:00")
 labels_at <- seq(0, 2000, 500)
 plot(intervals$intervals, intervals$mean_interval, type = "l", main = "Average Steps During 5-minute Intervals", 
-     ylab = "Average Steps", xlab = "Time", xaxt = "n")
+     ylab = "Average Steps", xlab = "Hour", xaxt = "n")
 axis(side = 1, at = labels_at, labels = labels)
 ```
 ![Plot of Average Steps Taken During 5-min Intervals](plot2.png)
@@ -115,20 +112,20 @@ for (i in 1:dim(data)[1]) {
     }
 }
 
-no_na <- data.frame(steps = steps, date = data$date, interval = data$interval)
+no_na_data <- data.frame(steps = steps, date = data$date, interval = data$interval)
 ```
 
 ```r
-hist(tapply(no_na$steps, no_na$date, sum), xlab = "Total Daily Steps", breaks = 20, main = "Total Steps Taken Per Day")
+hist(tapply(no_na_data$steps, no_na_data$date, sum), xlab = "Total Daily Steps", breaks = 20, main = "Total Steps Taken Per Day")
 ```
 
 ![Plot of Total Steps Taken Per Day](plot3.png)
 
 ```r
-total_daily_steps <- as.numeric(tapply(no_na$steps, 
-                                       no_na$date, sum))
-mean_steps <- mean(total_daily_steps)
-median_steps <- median(total_daily_steps)
+total_steps_daily <- as.numeric(tapply(no_na_data$steps, 
+                                       no_na_data$date, sum))
+mean_steps <- mean(total_steps_daily)
+median_steps <- median(total_steps_daily)
 ```
 ```r
 mean_steps
@@ -142,7 +139,7 @@ median_steps
 ```
 # [1] 10766
 ```
-The values are different slightly from the values of the first part of the assignment. The impact of imputing missing data on the estimates of the total daily number of steps is minute.
+The values differ slightly from the values from the first part of the assignment. The impact of imputing missing data on the estimates of the total daily number of steps is minimal.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -153,13 +150,15 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 
 ```r
-no_na$daytype <- c("weekend", "weekday", "weekday", 
-                                            "weekday", "weekday", "weekday", "weekend")[as.POSIXlt(no_na$date)$wday + 
+no_na_data$daytype <- c("weekend", "weekday", "weekday", 
+                                            "weekday", "weekday", "weekday", "weekend")[as.POSIXlt(no_na_data$date)$wday + 
                                                 1]
-no_na$daytype <- as.factor(no_na$daytype)
+no_na_data$daytype <- as.factor(no_na_data$daytype)
 
-weekday <- no_na[no_na$daytype == "weekday", ]
-weekend <- no_na[no_na$daytype == "weekend", ]
+weekday <- no_na_data[no_na_data$daytype == 
+    "weekday", ]
+weekend <- no_na_data[no_na_data$daytype == 
+    "weekend", ]
 weekday_means <- as.numeric(tapply(weekday$steps, weekday$interval, mean))
 weekend_means <- as.numeric(tapply(weekend$steps, weekend$interval, mean))
 
